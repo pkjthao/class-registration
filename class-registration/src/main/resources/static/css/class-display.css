@@ -1,0 +1,128 @@
+/* Filter Bar */
+.filter-bar {
+    background: white;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-input {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    width: 280px;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1a237e;
+}
+
+.filter-options {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.filter-btn {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #1a237e;
+    color: white;
+    border-color: #1a237e;
+}
+
+/* Class Info Page */
+.info-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    max-width: 750px;
+}
+
+.info-header {
+    background: #1a237e;
+    color: white;
+    padding: 1.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.info-header h1 {
+    color: white;
+    margin: 0.4rem 0 0;
+    font-size: 1.4rem;
+}
+
+.info-header .course-code {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 0.85rem;
+}
+
+.info-body {
+    padding: 1.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-row {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.75rem;
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: #444;
+    min-width: 120px;
+    font-size: 0.9rem;
+}
+
+.info-actions {
+    padding: 1.25rem 2rem;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Register Confirm Page */
+.confirm-details {
+    background: #f5f7ff;
+    border: 1px solid #c5cae9;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.confirm-details p {
+    font-size: 0.95rem;
+    color: #333;
+}

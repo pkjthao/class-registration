@@ -1,5 +1,6 @@
 package com.example.class_registration.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,6 +48,15 @@ public class Student {
     @Column(nullable=true)
     @JsonIgnore
     private String password;
+
+    @Column(nullable = false)
+    private boolean enabled = false;
+
+    @Column(length = 64)
+    private String verificationToken;
+
+    @Column
+    private LocalDateTime verificationTokenExpiry;
 
     @OneToMany(mappedBy="student", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @ToString.Exclude 

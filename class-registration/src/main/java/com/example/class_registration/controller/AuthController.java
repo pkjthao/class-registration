@@ -1,5 +1,6 @@
 package com.example.class_registration.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.class_registration.model.Instructor;
 import com.example.class_registration.model.Student;
+import com.example.class_registration.repository.StudentRepository;
 import com.example.class_registration.service.InstructorService;
 import com.example.class_registration.service.StudentService;
 
@@ -30,6 +32,8 @@ public class AuthController {
 
     @Autowired
     private InstructorService instructorService;
+
+    @Autowired StudentRepository studentRepository;
 
     @GetMapping("/")
     public String root() {
@@ -109,6 +113,29 @@ public class AuthController {
             model.addAttribute("error", e.getMessage());
             return "student-login";
         }
+    }
+
+    @GetMapping("/student/verify")
+    public String verifyStudent(@RequestParam String token, Model model) {
+        Student student = studentRepository.findByVerificationToken(token)
+            .orElse(null);
+
+        if (student == null) {
+            model.addAttribute("error", "Invalid or expired verification link.");
+            return "error";
+        }
+
+        if (student.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
+            model.addAttribute("error", "Verification link has expired.");
+            return "error";
+        }
+
+        student.setEnabled(true);
+        student.setVerificationToken(null);
+        student.setVerificationTokenExpiry(null);
+        studentRepository.save(student);
+
+        return "redirect:/student/login?verified=true";
     }
 
     @PostMapping("/instructor/login")

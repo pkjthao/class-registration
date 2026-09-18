@@ -1,0 +1,127 @@
+{
+  "tasks": [
+    {
+      "id": "001-java-version-upgrade",
+      "type": "upgrade",
+      "description": "Upgrade Java from 17 to a supported Azure-ready LTS version",
+      "requirements": "Upgrade the project from Java 17 to the recommended Azure-supported LTS version (target Java 21 unless the platform standard requires a different LTS). Validate compatibility with the Spring Boot application, Maven build, and deployment target.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "java-version-upgrade", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      }
+    },
+    {
+      "id": "002-postgresql-to-azure",
+      "type": "transform",
+      "description": "Move the application database from local PostgreSQL to Azure Database for PostgreSQL Flexible Server",
+      "requirements": "Replace localhost JDBC configuration with environment-managed Azure PostgreSQL settings and secure connection properties. Update configuration files for development and production to use Azure-hosted managed database services instead of local database access.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "migration-postgresql-to-azure-database-for-postgresql", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      }
+    },
+    {
+      "id": "003-secure-secret-management",
+      "type": "transform",
+      "description": "Replace hard-coded credentials in application configuration with secure secret management",
+      "requirements": "Remove datasource username and password values from application.properties and application-dev.properties. Replace them with environment variables or Azure Key Vault-backed secret resolution so the app no longer stores plaintext credentials in source-controlled files.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "azure-key-vault-secrets", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true",
+        "passSecretScan": "true"
+      }
+    },
+    {
+      "id": "004-local-resource-remediation",
+      "type": "transform",
+      "description": "Remove local JDBC resource dependency and align the app to cloud-ready configuration",
+      "requirements": "Eliminate localhost database access patterns from runtime configuration and reconfigure the application to use managed resources in Azure. Review spring.datasource.url, username, and password settings and update deployment environment configuration accordingly.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "cloud-resource-replatforming", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      }
+    },
+    {
+      "id": "005-containerization",
+      "type": "transform",
+      "description": "Add a Dockerfile and containerization support for Azure deployment",
+      "requirements": "Create a Dockerfile for the Spring Boot application so it can deploy to Azure Container Apps or AKS. Ensure the image is buildable without relying on localhost-only configuration and includes the required runtime configuration for Azure-ready execution.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "dockerfile-generation", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      }
+    },
+    {
+      "id": "006-cwe-259-hardcoded-password",
+      "type": "security",
+      "description": "Scan and resolve CWE-259: Use of Hard-coded Password",
+      "requirements": "Audit the application for hard-coded passwords and secrets. Remove embedded passwords from source-controlled configuration, add a secret-management remedy, and validate with a fresh secret scan to confirm the risk is resolved.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "security-cwe-259-hardcoded-password", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true",
+        "passSecretScan": "true"
+      }
+    },
+    {
+      "id": "007-cwe-778-insufficient-logging",
+      "type": "security",
+      "description": "Scan and resolve CWE-778: Insufficient Logging",
+      "requirements": "Add security-relevant logging for successful and failed authentication attempts in the student and instructor login flows. Ensure events capture enough context for security auditing without exposing plaintext secrets.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "security-cwe-778-insufficient-logging", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true",
+        "passAuditLogging": "true"
+      }
+    },
+    {
+      "id": "008-cwe-798-hardcoded-credentials",
+      "type": "security",
+      "description": "Scan and resolve CWE-798: Use of Hard-coded Credentials",
+      "requirements": "Audit the codebase and configuration files for hard-coded usernames, passwords, and credentials. Remove exposed credentials from application.properties and application-dev.properties and protect credentials by injecting them from a managed secret source.",
+      "environmentConfiguration": null,
+      "skills": [
+        { "name": "security-cwe-798-hardcoded-credentials", "location": "builtin" }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "passUnitTests": "true",
+        "passSecretScan": "true"
+      }
+    }
+  ],
+  "metadata": {
+    "language": "java",
+    "planName": "report-20260918124527",
+    "projectName": "class-registration",
+    "createdAt": "2026-09-18T17:55:27.935Z",
+    "version": "1.0"
+  }
+}

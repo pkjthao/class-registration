@@ -1,21 +1,26 @@
 package com.example.class_registration.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.class_registration.exception.DuplicateResourceException;
 import com.example.class_registration.exception.ResourceNotFoundException;
 import com.example.class_registration.model.Instructor;
 import com.example.class_registration.repository.InstructorRepository;
-import com.sun.jdi.request.DuplicateRequestException;
 
 @Service
 public class InstructorService {
 
     @Autowired
     private InstructorRepository instructorRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -28,12 +33,34 @@ public class InstructorService {
         return instructorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Instructor not found with id: " + id));
     }
 
-     public Instructor createInstructor(Instructor instructor) {
+    public Instructor createInstructor(Instructor instructor) {
         if (instructorRepository.existsByEmail(instructor.getEmail())) {
-            throw new DuplicateRequestException("Email already in use: " + instructor.getEmail());
+            throw new DuplicateResourceException(
+                "An account already exists with email: " + instructor.getEmail());
         }
+
         instructor.setPassword(passwordEncoder.encode(instructor.getPassword()));
-        return instructorRepository.save(instructor);
+        instructor.setEnabled(false);
+        instructor.setVerificationToken(UUID.randomUUID().toString());
+        instructor.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+
+        Instructor saved = instructorRepository.save(instructor);
+
+        String verifyUrl = "http://localhost:8080/instructor/verify?token="
+                + saved.getVerificationToken();
+
+        try {
+            emailService.sendSingleEmail(
+                saved.getEmail(),
+                "Verify your account",
+                "<p>Hello " + saved.getFirstName() + ",</p>"
+                + "<p>Click <a href='" + verifyUrl + "'>here</a> to verify your account.</p>"
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send verification email to " + saved.getEmail(), e);
+        }
+
+        return saved;
     }
 
     public Instructor updateInstructor(Long id, Instructor updatedInstructor) {

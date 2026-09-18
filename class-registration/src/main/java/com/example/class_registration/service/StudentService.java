@@ -1,6 +1,8 @@
 package com.example.class_registration.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,9 @@ import com.example.class_registration.repository.StudentRepository;
 public class StudentService {
 
     @Autowired StudentRepository studentRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -34,8 +39,29 @@ public class StudentService {
             throw new DuplicateResourceException(
                 "An account already exists with email: " + student.getEmail());
         }
+
         student.setPassword(passwordEncoder.encode(student.getPassword()));
-        return studentRepository.save(student);
+        student.setEnabled(false);
+        student.setVerificationToken(UUID.randomUUID().toString());
+        student.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+
+        Student saved = studentRepository.save(student);
+
+        String verifyUrl = "http://localhost:8080/student/verify?token="
+                + saved.getVerificationToken();
+
+        try {
+            emailService.sendSingleEmail(
+                saved.getEmail(),
+                "Verify your account",
+                "<p>Hello " + saved.getFirstName() + ",</p>"
+                + "<p>Click <a href='" + verifyUrl + "'>here</a> to verify your account.</p>"
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send verification email to " + saved.getEmail(), e);
+        }
+
+        return saved;
     }
 
     public Student updateStudent(Long id, Student updateStudent) {

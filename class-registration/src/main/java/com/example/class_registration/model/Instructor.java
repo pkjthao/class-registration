@@ -1,5 +1,7 @@
 package com.example.class_registration.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,4 +43,13 @@ public class Instructor {
 
     @Column
     private String aboutMe;
+
+    @Column(nullable = false)
+    private boolean enabled = false;
+
+    @Column(length = 64)
+    private String verificationToken;
+
+    @Column
+    private LocalDateTime verificationTokenExpiry;
 }

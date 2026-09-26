@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,6 +98,27 @@
                 </span>
 
             <% } %>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h2>Available Sections</h2>
+            <c:choose>
+                <c:when test="${empty sections}">
+                    <p>No sections have been added for this course yet.</p>
+                </c:when>
+                <c:otherwise>
+                    <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem;">
+                        <c:forEach var="section" items="${sections}">
+                            <div style="border:1px solid #d9d9d9; border-radius:8px; padding:1rem; background:#fafafa;">
+                                <strong>${section.sectionName}</strong>
+                                <p>${section.days} • ${section.startTime} - ${section.endTime}</p>
+                                <p>Location: ${section.location}</p>
+                                <p>${section.numEnrolled} / ${section.maxSeats} enrolled</p>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>

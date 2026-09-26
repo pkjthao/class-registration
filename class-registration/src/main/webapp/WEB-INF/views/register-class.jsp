@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +27,27 @@
     </div>
 
     <form action="/api/courses/${course.id}/register" method="post">
-        <button type="submit" class="btn-primary">Confirm Registration</button>
+        <div class="section-picker">
+            <c:choose>
+                <c:when test="${empty sections}">
+                    <p>No sections are available for this course yet.</p>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="section" items="${sections}">
+                        <label class="section-option" style="display:block; margin:0.75rem 0; border:1px solid #ddd; padding:0.75rem; border-radius:8px;">
+                            <input type="radio" name="sectionId" value="${section.id}" required>
+                            <span>
+                                <strong>${section.sectionName}</strong><br>
+                                ${section.days} • ${section.startTime} - ${section.endTime}<br>
+                                ${section.location}<br>
+                                ${section.numEnrolled} / ${section.maxSeats} enrolled
+                            </span>
+                        </label>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <button type="submit" class="btn-primary" ${empty sections ? 'disabled' : ''}>Confirm Registration</button>
     </form>
 
     <a href="/api/courses/${course.id}/info" class="redirect-link">Cancel</a>

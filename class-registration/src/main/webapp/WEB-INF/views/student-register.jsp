@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +38,15 @@
             <input type="tel" id="phone" name="phone" required>
         </div>
         <div class="form-group">
+            <label for="associationId">Association</label>
+            <select id="associationId" name="associationId" required>
+                <option value="">Select an association</option>
+                <c:forEach var="association" items="${associations}">
+                    <option value="${association.id}">${association.groupName}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
@@ -48,6 +58,7 @@
     </form>
 
     <p class="redirect-link">Already have an account? <a href="/student/login">Sign in</a></p>
+    <p class="redirect-link">Need to add your group first? <a href="/associations/add">Add an association</a></p>
     <p class="redirect-link">Are you an instructor? <a href="/instructor/register">Register here</a></p>
 </div>
 

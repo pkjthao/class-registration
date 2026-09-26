@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="courses")
+@Table(name="courses", schema="class_admin")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,4 +59,8 @@ public class Course {
     @OneToMany(mappedBy="course", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @JsonIgnore
     private List<Registration> registrations;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<CourseSection> sections = new java.util.ArrayList<>();
 }

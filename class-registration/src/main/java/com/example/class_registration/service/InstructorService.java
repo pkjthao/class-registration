@@ -44,23 +44,21 @@ public class InstructorService {
         instructor.setVerificationToken(UUID.randomUUID().toString());
         instructor.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
 
-        Instructor saved = instructorRepository.save(instructor);
-
         String verifyUrl = "http://localhost:8080/instructor/verify?token="
-                + saved.getVerificationToken();
+                + instructor.getVerificationToken();
 
         try {
             emailService.sendSingleEmail(
-                saved.getEmail(),
+                instructor.getEmail(),
                 "Verify your account",
-                "<p>Hello " + saved.getFirstName() + ",</p>"
+                "<p>Hello " + instructor.getFirstName() + ",</p>"
                 + "<p>Click <a href='" + verifyUrl + "'>here</a> to verify your account.</p>"
             );
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send verification email to " + saved.getEmail(), e);
+            throw new RuntimeException("Failed to send verification email to " + instructor.getEmail(), e);
         }
 
-        return saved;
+        return instructorRepository.save(instructor);
     }
 
     public Instructor updateInstructor(Long id, Instructor updatedInstructor) {
@@ -84,6 +82,10 @@ public class InstructorService {
     public Instructor findByEmailAndPassword(String email, String password) {
         Instructor instructor = instructorRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("No account found with that email"));
+
+        if (!instructor.isEnabled()) {
+            throw new RuntimeException("Please verify your email before logging in.");
+        }
 
         if (!passwordEncoder.matches(password, instructor.getPassword())) {
             throw new RuntimeException("Incorrect password");

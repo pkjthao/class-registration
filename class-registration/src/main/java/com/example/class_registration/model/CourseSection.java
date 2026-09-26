@@ -1,6 +1,6 @@
 package com.example.class_registration.model;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,50 +23,47 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "students", schema="class_admin")
+@Table(name = "course_sections", schema="class_admin")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+public class CourseSection {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = true)
-    private String middleName;
+    private String sectionName;
 
     @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false, unique=true)
-    private String email;
-
-    @Column(nullable=false)
-    private String phone;
-
-    @Column(nullable=true)
-    @JsonIgnore
-    private String password;
-
-    @ManyToOne
-    @JoinColumn(name = "association_id")
-    private Associations association;
+    private String days;
 
     @Column(nullable = false)
-    private boolean enabled = false;
+    private String startTime;
 
-    @Column(length = 64)
-    private String verificationToken;
+    @Column(nullable = false)
+    private String endTime;
 
     @Column
-    private LocalDateTime verificationTokenExpiry;
+    private String location;
 
-    @OneToMany(mappedBy="student", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    @ToString.Exclude 
-    @EqualsAndHashCode.Exclude
+    @Column(nullable = false)
+    private Integer maxSeats;
+
+    @Column(nullable = false)
+    private Integer numEnrolled = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
     @JsonIgnore
-    private List<Registration> registrations;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Course course;
+
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Registration> registrations = new ArrayList<>();
 }

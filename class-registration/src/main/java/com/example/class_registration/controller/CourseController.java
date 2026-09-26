@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.class_registration.model.Course;
+import com.example.class_registration.model.CourseSection;
+import com.example.class_registration.service.CourseSectionService;
 import com.example.class_registration.service.CourseService;
 import com.example.class_registration.service.RegistrationService;
 
@@ -31,6 +33,9 @@ public class CourseController {
 
     @Autowired
     private RegistrationService registrationService;
+
+    @Autowired
+    private CourseSectionService courseSectionService;
 
     @GetMapping
     @ResponseBody
@@ -93,6 +98,7 @@ public class CourseController {
                             Model model) {
         Course course = courseService.getCourseById(id);
         model.addAttribute("course", course);
+        model.addAttribute("sections", courseSectionService.getSectionsByCourseId(id));
         model.addAttribute("studentId", session.getAttribute("studentId"));
         return "class-info";
     }
@@ -106,22 +112,30 @@ public class CourseController {
         }
         Course course = courseService.getCourseById(id);
         model.addAttribute("course", course);
+        model.addAttribute("sections", courseSectionService.getSectionsByCourseId(id));
         return "register-class";
     }
 
     @PostMapping("/{id}/register")
     public String registerForCourse(@PathVariable Long id,
+                                    @RequestParam(required = false) Long sectionId,
                                     HttpSession session,
                                     Model model) {
         Long studentId = (Long) session.getAttribute("studentId");
         if (studentId == null) return "redirect:/student/login";
 
         try {
-            registrationService.enrollStudent(studentId, id);
+            if (sectionId == null) {
+                registrationService.enrollStudent(studentId, id);
+            } else {
+                registrationService.enrollStudent(studentId, id, sectionId);
+            }
             return "redirect:/student/home";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("course", courseService.getCourseById(id));
+            Course course = courseService.getCourseById(id);
+            model.addAttribute("course", course);
+            model.addAttribute("sections", courseSectionService.getSectionsByCourseId(id));
             return "register-class";
         }
     }

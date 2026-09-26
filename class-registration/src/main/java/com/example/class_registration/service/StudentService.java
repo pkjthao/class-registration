@@ -45,23 +45,21 @@ public class StudentService {
         student.setVerificationToken(UUID.randomUUID().toString());
         student.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
 
-        Student saved = studentRepository.save(student);
-
         String verifyUrl = "http://localhost:8080/student/verify?token="
-                + saved.getVerificationToken();
+                + student.getVerificationToken();
 
         try {
             emailService.sendSingleEmail(
-                saved.getEmail(),
+                student.getEmail(),
                 "Verify your account",
-                "<p>Hello " + saved.getFirstName() + ",</p>"
+                "<p>Hello " + student.getFirstName() + ",</p>"
                 + "<p>Click <a href='" + verifyUrl + "'>here</a> to verify your account.</p>"
             );
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send verification email to " + saved.getEmail(), e);
+            throw new RuntimeException("Failed to send verification email to " + student.getEmail(), e);
         }
 
-        return saved;
+        return studentRepository.save(student);
     }
 
     public Student updateStudent(Long id, Student updateStudent) {
@@ -85,12 +83,16 @@ public class StudentService {
 
     public Student findByEmailAndPassword(String email, String password) {
         Student student = studentRepository.findByEmail(email)
-            .orElseThrow(() ->
-                new ResourceNotFoundException("No account found with that email"));
+            .orElseThrow(() -> new ResourceNotFoundException("No account found with that email"));
+
+        if (!student.isEnabled()) {
+            throw new RuntimeException("Please verify your email before logging in.");
+        }
 
         if (!passwordEncoder.matches(password, student.getPassword())) {
             throw new RuntimeException("Incorrect password");
         }
+
         return student;
     }
 }

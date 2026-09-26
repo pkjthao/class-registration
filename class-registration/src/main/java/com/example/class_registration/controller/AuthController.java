@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.class_registration.model.Instructor;
 import com.example.class_registration.model.Student;
 import com.example.class_registration.repository.StudentRepository;
+import com.example.class_registration.service.AssociationService;
 import com.example.class_registration.service.InstructorService;
 import com.example.class_registration.service.StudentService;
 
@@ -33,6 +34,9 @@ public class AuthController {
     @Autowired
     private InstructorService instructorService;
 
+    @Autowired
+    private AssociationService associationService;
+
     @Autowired StudentRepository studentRepository;
 
     @GetMapping("/")
@@ -41,12 +45,14 @@ public class AuthController {
     }
 
     @GetMapping("/student/register")
-    public String studentRegisterPage() {
-        return "student-register";   
+    public String studentRegisterPage(Model model) {
+        model.addAttribute("associations", associationService.getAllAssociations());
+        return "student-register";
     }
 
     @GetMapping("/instructor/register")
-    public String instructorRegisterPage() {
+    public String instructorRegisterPage(Model model) {
+        model.addAttribute("associations", associationService.getAllAssociations());
         return "instructor-register";
     }
 
@@ -61,23 +67,31 @@ public class AuthController {
     }
 
     @PostMapping("/student/register")
-    public String registerStudent(@ModelAttribute Student student, Model model) {
+    public String registerStudent(@ModelAttribute Student student,
+                                @RequestParam Long associationId,
+                                Model model) {
         try {
+            student.setAssociation(associationService.getAssociationById(associationId));
             studentService.createStudent(student);
             return "redirect:/student/login?registered=true";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("associations", associationService.getAllAssociations());
             return "student-register";
         }
     }
 
     @PostMapping("/instructor/register")
-    public String registerInstructor(@ModelAttribute Instructor instructor, Model model) {
+    public String registerInstructor(@ModelAttribute Instructor instructor,
+                                    @RequestParam Long associationId,
+                                    Model model) {
         try {
+            instructor.setAssociation(associationService.getAssociationById(associationId));
             instructorService.createInstructor(instructor);
             return "redirect:/instructor/login?registered=true";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("associations", associationService.getAllAssociations());
             return "instructor-register";
         }
     }
@@ -136,6 +150,32 @@ public class AuthController {
         studentRepository.save(student);
 
         return "redirect:/student/login?verified=true";
+    }
+
+    @GetMapping("/instructor/verify")
+    public String verifyInstructor(@RequestParam String token, Model model) {
+        Instructor instructor = instructorService.getAllInstructors().stream()
+            .filter(i -> token.equals(i.getVerificationToken()))
+            .findFirst()
+            .orElse(null);
+
+        if (instructor == null) {
+            model.addAttribute("error", "Invalid or expired verification link.");
+            return "error";
+        }
+
+        if (instructor.getVerificationTokenExpiry() == null ||
+            instructor.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
+            model.addAttribute("error", "Verification link has expired.");
+            return "error";
+        }
+
+        instructor.setEnabled(true);
+        instructor.setVerificationToken(null);
+        instructor.setVerificationTokenExpiry(null);
+        instructorService.updateInstructor(instructor.getId(), instructor);
+
+        return "redirect:/instructor/login?verified=true";
     }
 
     @PostMapping("/instructor/login")

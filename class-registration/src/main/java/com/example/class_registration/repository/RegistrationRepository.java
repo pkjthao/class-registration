@@ -16,9 +16,15 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     List<Registration> findByCourseId(Long courseId);
 
+    List<Registration> findBySectionId(Long sectionId);
+
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
 
+    boolean existsByStudentIdAndSectionId(Long studentId, Long sectionId);
+
     Optional<Registration> findByStudentIdAndCourseId(Long studentId, Long courseId);
+
+    Optional<Registration> findByStudentIdAndSectionId(Long studentId, Long sectionId);
 
     List<Registration> findByStatus(RegistrationStatus status);
 }

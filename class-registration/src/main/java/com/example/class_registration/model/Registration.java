@@ -23,9 +23,9 @@ import lombok.ToString;
 
 @Entity
 @Table(
-    name="registrations",
+    name="registrations", schema="class_admin",
     uniqueConstraints={
-        @UniqueConstraint(columnNames={"student_id", "course_id"})
+        @UniqueConstraint(columnNames={"student_id", "section_id"})
     }
 )
 @Data
@@ -48,6 +48,15 @@ public class Registration {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Course course;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private CourseSection section;
+
+    @Column
+    private String grade;
 
     @Column(nullable=false)
     private LocalDateTime registrationTime;

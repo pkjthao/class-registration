@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Group</title>
+    <title>Edit Group</title>
     <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
@@ -13,37 +13,37 @@
 
 <div class="association-page">
     <div class="form-container association-form-panel">
-        <h1>Add Group</h1>
+        <h1>Edit Group</h1>
 
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message"><%= request.getAttribute("error") %></div>
         <% } %>
 
-        <% if (request.getAttribute("success") != null) { %>
-            <div class="success-message"><%= request.getAttribute("success") %></div>
-        <% } %>
-
-        <form action="/associations/create" method="post">
+        <form action="/associations/${association.id}/update" method="post">
             <div class="form-group">
                 <label for="groupName">Group Name</label>
-                <input type="text" id="groupName" name="groupName" required>
+                <input type="text" id="groupName" name="groupName" value="${association.groupName}" required>
             </div>
             <div class="form-group">
                 <label for="location">Location</label>
-                <input type="text" id="location" name="location" required>
+                <input type="text" id="location" name="location" value="${association.location}" required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="${association.email}" required>
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Phone Number</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                <input type="tel" id="phoneNumber" name="phoneNumber" value="${association.phoneNumber}" required>
             </div>
-            <button type="submit" class="btn-primary">Save Group</button>
+            <button type="submit" class="btn-primary">Update Group</button>
         </form>
 
-        <p class="redirect-link"><a href="/instructor/home">Back to Home</a></p>
+        <form action="/associations/${association.id}/delete" method="post" onsubmit="return confirm('Delete this group?');" style="margin-top: 1rem;">
+            <button type="submit" class="delete-btn full-width">Delete Group</button>
+        </form>
+
+        <p class="redirect-link"><a href="/associations/add">Back to Add Group</a></p>
     </div>
 
     <div class="association-list-panel">
@@ -59,18 +59,13 @@
 
             <c:if test="${not empty associations}">
                 <ul class="association-list">
-                    <c:forEach var="association" items="${associations}">
+                    <c:forEach var="item" items="${associations}">
                         <li class="association-item">
-                            <div class="association-row">
-                                <a href="/associations/${association.id}/edit" class="association-link">
-                                    <div class="association-name">${association.groupName}</div>
-                                    <div class="association-meta">${association.location}</div>
-                                    <div class="association-meta">${association.email}</div>
-                                </a>
-                                <form action="/associations/${association.id}/delete" method="post" onsubmit="return confirm('Delete this association?');">
-                                    <button type="submit" class="delete-btn">Delete</button>
-                                </form>
-                            </div>
+                            <a href="/associations/${item.id}/edit" class="association-link">
+                                <div class="association-name">${item.groupName}</div>
+                                <div class="association-meta">${item.location}</div>
+                                <div class="association-meta">${item.email}</div>
+                            </a>
                         </li>
                     </c:forEach>
                 </ul>

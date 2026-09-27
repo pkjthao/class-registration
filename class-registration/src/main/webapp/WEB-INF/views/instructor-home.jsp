@@ -15,7 +15,7 @@
     <div class="nav-links">
         <a href="/instructor/home" class="active">My Courses</a>
         <a href="/api/courses/display">Browse Courses</a>
-        <a href="/associations/add">Add Association</a>
+        <a href="/associations/add">Small Groups</a>
         <a href="/instructor/logout">Logout</a>
     </div>
 </nav>
@@ -38,7 +38,7 @@
         <div class="success-banner">Course successfully removed.</div>
     <% } %>
     <% if ("true".equals(request.getParameter("associationAdded"))) { %>
-        <div class="success-banner">Association successfully added.</div>
+        <div class="success-banner">Group successfully added.</div>
     <% } %>
     <% if ("unauthorized".equals(request.getParameter("error"))) { %>
         <div class="error-banner">You can only delete your own courses.</div>

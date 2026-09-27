@@ -36,4 +36,30 @@ public class AssociationService {
 
         return associationRepository.save(association);
     }
+
+    public Associations updateAssociation(Long id, Associations updatedAssociation) {
+        Associations existing = getAssociationById(id);
+
+        if (!existing.getEmail().equalsIgnoreCase(updatedAssociation.getEmail())
+                && associationRepository.existsByEmail(updatedAssociation.getEmail())) {
+            throw new DuplicateResourceException("Association already exists with email: " + updatedAssociation.getEmail());
+        }
+
+        if (!existing.getGroupName().equalsIgnoreCase(updatedAssociation.getGroupName())
+                && associationRepository.existsByGroupName(updatedAssociation.getGroupName())) {
+            throw new DuplicateResourceException("Association already exists with group name: " + updatedAssociation.getGroupName());
+        }
+
+        existing.setGroupName(updatedAssociation.getGroupName());
+        existing.setLocation(updatedAssociation.getLocation());
+        existing.setEmail(updatedAssociation.getEmail());
+        existing.setPhoneNumber(updatedAssociation.getPhoneNumber());
+
+        return associationRepository.save(existing);
+    }
+
+    public void deleteAssociation(Long id) {
+        Associations association = getAssociationById(id);
+        associationRepository.delete(association);
+    }
 }

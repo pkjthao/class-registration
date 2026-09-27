@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,6 +22,7 @@ public class AssociationController {
     @GetMapping("/add")
     public String addAssociationPage(Model model) {
         model.addAttribute("association", new Associations());
+        model.addAttribute("associations", associationService.getAllAssociations());
         return "add-association";
     }
 
@@ -28,10 +30,52 @@ public class AssociationController {
     public String createAssociation(@ModelAttribute Associations association, Model model) {
         try {
             associationService.createAssociation(association);
-            return "redirect:/instructor/home?associationAdded=true";
+            model.addAttribute("association", new Associations());
+            model.addAttribute("associations", associationService.getAllAssociations());
+            model.addAttribute("success", "Association created successfully.");
+            return "add-association";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("association", association);
+            model.addAttribute("associations", associationService.getAllAssociations());
+            return "add-association";
+        }
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editAssociationPage(@PathVariable Long id, Model model) {
+        model.addAttribute("association", associationService.getAssociationById(id));
+        model.addAttribute("associations", associationService.getAllAssociations());
+        return "edit-association";
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateAssociation(@PathVariable Long id, @ModelAttribute Associations association, Model model) {
+        try {
+            associationService.updateAssociation(id, association);
+            model.addAttribute("association", new Associations());
+            model.addAttribute("associations", associationService.getAllAssociations());
+            model.addAttribute("success", "Association updated successfully.");
+            return "add-association";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("association", association);
+            model.addAttribute("associations", associationService.getAllAssociations());
+            return "edit-association";
+        }
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteAssociation(@PathVariable Long id, Model model) {
+        try {
+            associationService.deleteAssociation(id);
+            model.addAttribute("association", new Associations());
+            model.addAttribute("associations", associationService.getAllAssociations());
+            model.addAttribute("success", "Association deleted successfully.");
+            return "add-association";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("associations", associationService.getAllAssociations());
             return "add-association";
         }
     }

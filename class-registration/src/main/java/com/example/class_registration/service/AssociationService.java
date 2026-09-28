@@ -51,6 +51,9 @@ public class AssociationService {
         }
 
         existing.setGroupName(updatedAssociation.getGroupName());
+        existing.setLeaderName(updatedAssociation.getLeaderName());
+        existing.setGroupVision(updatedAssociation.getGroupVision());
+        existing.setGroupMission(updatedAssociation.getGroupMission());
         existing.setLocation(updatedAssociation.getLocation());
         existing.setEmail(updatedAssociation.getEmail());
         existing.setPhoneNumber(updatedAssociation.getPhoneNumber());

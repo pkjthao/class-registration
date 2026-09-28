@@ -25,6 +25,18 @@
                 <input type="text" id="groupName" name="groupName" value="${association.groupName}" required>
             </div>
             <div class="form-group">
+                <label for="leaderName">Servant Name</label>
+                <input type="text" id="leaderName" name="leaderName" value="${association.leaderName}" required>
+            </div>
+            <div class="form-group">
+                <label for="groupVision">Group Vision</label>
+                <textarea id="groupVision" name="groupVision" rows="3" required>${association.groupVision}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="groupMission">Group Mission</label>
+                <textarea id="groupMission" name="groupMission" rows="3" required>${association.groupMission}</textarea>
+            </div>
+            <div class="form-group">
                 <label for="location">Location</label>
                 <input type="text" id="location" name="location" value="${association.location}" required>
             </div>

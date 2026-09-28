@@ -96,6 +96,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    min-height: 270px;
     transition: box-shadow 0.2s;
 }
 
@@ -170,8 +171,11 @@ body {
 /* ── Card Actions ────────────────────────────────── */
 .card-actions {
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
     gap: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
 }
 
 /* ── Buttons ─────────────────────────────────────── */

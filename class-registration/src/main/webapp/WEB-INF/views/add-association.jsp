@@ -29,6 +29,18 @@
                 <input type="text" id="groupName" name="groupName" required>
             </div>
             <div class="form-group">
+                <label for="leaderName">Servant Name</label>
+                <input type="text" id="leaderName" name="leaderName" required>
+            </div>
+            <div class="form-group">
+                <label for="groupVision">Group Vision</label>
+                <textarea id="groupVision" name="groupVision" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="groupMission">Group Mission</label>
+                <textarea id="groupMission" name="groupMission" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
                 <label for="location">Location</label>
                 <input type="text" id="location" name="location" required>
             </div>
@@ -64,7 +76,7 @@
                             <div class="association-row">
                                 <a href="/associations/${association.id}/edit" class="association-link">
                                     <div class="association-name">${association.groupName}</div>
-                                    <div class="association-meta">${association.location}</div>
+                                    <div class="association-meta">${association.leaderName}</div>
                                     <div class="association-meta">${association.email}</div>
                                 </a>
                                 <form action="/associations/${association.id}/delete" method="post" onsubmit="return confirm('Delete this association?');">

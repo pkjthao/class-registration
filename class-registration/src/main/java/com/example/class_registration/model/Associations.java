@@ -33,6 +33,15 @@ public class Associations {
     private String groupName;
 
     @Column(nullable = false)
+    private String leaderName;
+
+    @Column(nullable = false)
+    private String groupVision;
+
+    @Column(nullable = false)
+    private String groupMission;
+
+    @Column(nullable = false)
     private String location;
 
     @Column(nullable = false, unique = true)
